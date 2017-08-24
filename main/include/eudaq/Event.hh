@@ -79,6 +79,7 @@ namespace eudaq {
     template <typename T> T GetTag(const std::string &name, T def) const {
       return eudaq::from_string(GetTag(name), def);
     }
+    std::map<std::string, std::string> GetTags() const { return m_tags; }
 
     bool IsBORE() const { return GetFlags(FLAG_BORE) != 0; }
     bool IsEORE() const { return GetFlags(FLAG_EORE) != 0; }
