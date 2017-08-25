@@ -54,7 +54,7 @@ namespace eudaq {
     virtual bool GetStandardSubEvent(StandardEvent &sev,
                                      const Event &ev) const {
 
-      std::string sensortype = "CBC";
+      std::string sensortype = "Ph2Sensor";
       if(const RawDataEvent * cRawEvent = dynamic_cast<const RawDataEvent* > (&ev))
       {
           uint32_t cNBlocks = cRawEvent->NumBlocks();
@@ -66,16 +66,18 @@ namespace eudaq {
               // Set the number of pixels
               int width = getlittleendian<unsigned short>(&data[WIDTH_OFFSET]);
               int height = getlittleendian<unsigned short>(&data[HEIGHT_OFFSET]);
-              plane.SetSizeRaw(width, height);
+              plane.SetSizeZS(width, height, data.size()/6);
               // Set the trigger ID
               plane.SetTLUEvent(GetTriggerID(ev));
 
               //get strip data
               uint32_t value_offset = DATA_OFFSET;
+              uint32_t pixel_id = 0;
               while(value_offset < data.size())
               {
-                  plane.PushPixel(getlittleendian<unsigned short>(&data[value_offset+0]),getlittleendian<unsigned short>(&data[value_offset+2]),getlittleendian<unsigned short>(&data[value_offset+4]));
+                  plane.SetPixel(pixel_id,getlittleendian<unsigned short>(&data[value_offset+0]),getlittleendian<unsigned short>(&data[value_offset+2]),getlittleendian<unsigned short>(&data[value_offset+4]));
                   value_offset += 6;
+                  pixel_id++;
               }
 
               // Add the plane to the StandardEvent
@@ -186,7 +188,7 @@ namespace eudaq {
 
       // set parameters
       LCEventImpl &lcioEventImpl = dynamic_cast<LCEventImpl&>(lcioEvent);
-      lcioEventImpl.setDetectorName("CBC");
+      lcioEventImpl.setDetectorName("Ph2Sensor");
       lcioEventImpl.setTimeStamp(GetTriggerID(ev_raw));
       const std::map<std::string, std::string> cRawTags = ev_raw.GetTags();
       for(auto item : cRawTags) {
