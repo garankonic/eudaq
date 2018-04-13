@@ -66,7 +66,7 @@ namespace eudaq {
               // Set the number of pixels
               int width = getlittleendian<unsigned short>(&data[WIDTH_OFFSET]);
               int height = getlittleendian<unsigned short>(&data[HEIGHT_OFFSET]);
-              plane.SetSizeZS(width, height, data.size()/6);
+              plane.SetSizeZS(width, height, data.size()/6-1);
               // Set the trigger ID
               plane.SetTLUEvent(GetTriggerID(ev));
 
