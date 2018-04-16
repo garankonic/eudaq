@@ -17,4 +17,5 @@
 #export QTLIB=$QTDIR/lib
 #export PATH=$QTDIR/bin:$PATH
 
-export PATH=/home/vertextb/eudaq/bin:$PATH
+export PYTHONPATH=$PYTHONPATH:/home/harankom/Soft/eudaq/python
+#export PATH=/home/vertextb/eudaq/bin:$PATH

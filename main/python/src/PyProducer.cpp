@@ -21,9 +21,20 @@ class PyProducer : public eudaq::Producer {
     PyProducer(const std::string & name, const std::string & runcontrol)
       : eudaq::Producer(name, runcontrol), m_internalstate(Init), m_name(name), m_run(0), m_evt(0), m_config(NULL) {}
   
-    void SendEvent(uint8_t* data, size_t size) {
+    void SendEvent(uint8_t* data, size_t size, uint32_t* tagdata, size_t tagsize) {
       RawDataEvent ev(m_name, m_run, ++m_evt);
+      // set data
       ev.AddBlock(0, data, size);
+      // set tags
+      ev.SetTag("FC7_L1_COUNTER", tagdata[0]);
+      ev.SetTag("FC7_BX_COUNTER", tagdata[1]);
+      ev.SetTag("TDC", tagdata[2]);
+      ev.SetTag("TLU_TRIGGER_ID", tagdata[3]);
+      ev.SetTag("MPA_ERROR", tagdata[4]);
+      ev.SetTag("MPA_L1_COUNTER", tagdata[5]);
+      ev.SetTag("MPA_N_STRIP_CLUSTERS", tagdata[6]);
+      ev.SetTag("MPA_N_PIXEL_CLUSTERS", tagdata[7]);
+      // send event
       eudaq::DataSender::SendEvent(ev);
     }
 
@@ -148,7 +159,7 @@ private:
 extern "C" {
   DLLEXPORT PyProducer* PyProducer_new(char *name, char *rcaddress){return new PyProducer(std::string(name),std::string(rcaddress));}
   // functions for I/O
-  DLLEXPORT void PyProducer_SendEvent(PyProducer *pp, uint8_t* buffer, size_t size){pp->SendEvent(buffer,size);}
+  DLLEXPORT void PyProducer_SendEvent(PyProducer *pp, uint8_t* buffer, size_t size, uint32_t* tagdata, size_t tagsize){pp->SendEvent(buffer,size, tagdata, tagsize);}
   DLLEXPORT char* PyProducer_GetConfigParameter(PyProducer *pp, char *item){
     std::string value = pp->GetConfigParameter(std::string(item));
     // convert string to char*

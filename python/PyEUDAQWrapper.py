@@ -1,5 +1,5 @@
 import sys
-from ctypes import cdll, create_string_buffer, byref, c_uint, c_void_p, c_char_p, c_size_t, c_uint8, POINTER
+from ctypes import cdll, create_string_buffer, byref, c_uint, c_void_p, c_char_p, c_size_t, c_uint8, c_uint32, POINTER
 import numpy
 import os.path
 
@@ -63,9 +63,11 @@ class PyProducer(object):
         lib.PyProducer_new.restype = c_void_p # Needed
         self.obj = lib.PyProducer_new(create_string_buffer(name), 
                                       create_string_buffer(rcaddr))
-    def SendEvent(self,data):
+
+    def SendEvent(self,data,tagdata):
         data_p = data.ctypes.data_as(POINTER(c_uint8))
-        lib.PyProducer_SendEvent(c_void_p(self.obj),data_p,data.nbytes)
+        tagdata_p = tagdata.ctypes.data_as(POINTER(c_uint32))
+        lib.PyProducer_SendEvent(c_void_p(self.obj),data_p,data.nbytes,tagdata_p,tagdata.nbytes)
     def GetConfigParameter(self, item):
         return c_char_p(lib.PyProducer_GetConfigParameter(c_void_p(self.obj),create_string_buffer(item))).value
     @property
