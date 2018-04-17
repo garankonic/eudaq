@@ -34,6 +34,11 @@ class PyProducer : public eudaq::Producer {
       ev.SetTag("MPA_L1_COUNTER", tagdata[5]);
       ev.SetTag("MPA_N_STRIP_CLUSTERS", tagdata[6]);
       ev.SetTag("MPA_N_PIXEL_CLUSTERS", tagdata[7]);
+      ev.SetTag("STUB_0", tagdata[8]);
+      ev.SetTag("STUB_1", tagdata[9]);
+      ev.SetTag("STUB_2", tagdata[10]);
+      ev.SetTag("STUB_3", tagdata[11]);
+      ev.SetTag("STUB_4", tagdata[12]);
       // send event
       eudaq::DataSender::SendEvent(ev);
     }
